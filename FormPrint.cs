@@ -12,7 +12,7 @@ using PdfSharpCore;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 
-namespace project_TelegraphicTransfer
+namespace projectTelegraphicTransfer
 {
 
     public partial class FormPrint : Form
@@ -63,11 +63,11 @@ namespace project_TelegraphicTransfer
         private string _insertBy;
         public string InsertBy
         {
-           
+
             set
             {
                 _insertBy = value;
-     
+
             }
         }
 
@@ -80,6 +80,9 @@ namespace project_TelegraphicTransfer
 
             }
         }
+
+
+        
 
 
         #endregion
@@ -141,6 +144,7 @@ namespace project_TelegraphicTransfer
 
 
                         XGraphics gfx = XGraphics.FromPdfPage(page);
+                        XGraphics gfz = XGraphics.FromPdfPage(page);
 
                         //---TT Desing--
                         XFont fontphagrafe = new XFont("Calibri", 10); // Use a different font
@@ -287,12 +291,13 @@ namespace project_TelegraphicTransfer
                         //END topig
 
                         //Sender
+                       
                         XRect senderName = new XRect(30, 195, 542.5, 13);
                         gfx.DrawRectangle(Hbox, senderName);
                         string sName = "NAME OF THE APPLICANT*";
                         XRect textboundSname = new XRect(33, 195, 0, 0); //text aligment
                         gfx.DrawString(sName, body, brush, textboundSname, XStringFormats.TopLeft);
-
+                        
                         XRect senderAddres = new XRect(30, 208, 542.5, 13);
                         gfx.DrawRectangle(Hbox, senderAddres);
                         string sAddr = "ADDRESS*";
@@ -1293,6 +1298,8 @@ namespace project_TelegraphicTransfer
 
                 }
 
+
+
                 // Hide all other controls within panel1
                 foreach (Control control in pnlt.Controls)
                 {
@@ -1322,9 +1329,12 @@ namespace project_TelegraphicTransfer
             {
                 if (_uSPage2 == null)
                 {
+
                     USPage2 = new USPage2();
 
                 }
+
+
 
                 // Hide all other controls within panel1
                 foreach (Control control in pnlt.Controls)
@@ -1358,6 +1368,8 @@ namespace project_TelegraphicTransfer
                     UCPage3 = new UCPage3();
 
                 }
+
+
 
                 // Hide all other controls within panel1
                 foreach (Control control in pnlt.Controls)
@@ -1407,7 +1419,7 @@ namespace project_TelegraphicTransfer
 
                         MessageBox.Show(_formName + " " + _purpose + " " + _insertBy + " " + _date.ToString());
 
-                        
+
 
                         connsql.Open();
                         SqlCommand cmd = new SqlCommand("SELECT * FROM tbl_TRANSFER_ORDER_FORM where FILE_REFERENCE = @file and PURPOSE = @pur and ADD_EDITOR = @insert_by ", connsql);
@@ -1423,10 +1435,31 @@ namespace project_TelegraphicTransfer
                                 UCPage2 = new UCPage2();
                                 UCPage2.Name = reader["SENDER_NAME"].ToString();
                                 UCPage2.Address = reader["SENDER_ADDRESS"].ToString();
-                                //UCPage2.Business = reader["SENDER_BUSINESS"].ToString();
+                                UCPage2.Business = reader["SENDER_BUSINESS"].ToString();
                                 UCPage2.Phone = reader["SENDER_TPNO"].ToString();
                                 UCPage2.Purpose = reader["PURPOSE"].ToString();
-
+                                UCPage2.InNo = reader["INV"].ToString();
+                                UCPage2.vat = reader["SENDER_TAX"].ToString();
+                                UCPage2.Tin = reader["SENDER_TAX"].ToString();
+                                UCPage2.Bname = reader["BENEFICIARY_NAME"].ToString();
+                                UCPage2.Badress= reader["BENEFICIARY_ADDRESS"].ToString();
+                                UCPage2.Amount = reader["AMOUNT"].ToString();
+                                UCPage2.email1= reader["SENDER_EMAIL1"].ToString();
+                                UCPage2.email2 = reader["SENDER_EMAIL2"].ToString();
+                                UCPage2.BBCode = reader["BENEFICIARY_BRANCH_CODE"].ToString();
+                                UCPage2.BSCode= reader["BENEFICIARY_SWIFT_CODE"].ToString();
+                                UCPage2.BCountry= reader["BENEFICIARY_COUNTRY"].ToString();
+                                UCPage2.BANo= reader["BENEFICIARY_ACC_NO"].ToString();
+                                UCPage2.BIBank = reader["BENEFICIARY_INTERMEDIATE_BANK"].ToString();
+                                UCPage2.CType= reader["CURRENCY_TYPE"].ToString();
+                                UCPage2.AWords = reader["AMOUNT_WORDS"].ToString();
+                                UCPage2.Bank= reader["BENEFICIARY_BANK_NAME"].ToString();
+                                UCPage2.branch = reader["BENEFICIARY_BRANCH_NAME"].ToString();
+                                UCPage2.goods = reader["GOOD_STATE"].ToString();
+                                UCPage2.code= reader["HS_CODES"].ToString();
+                                UCPage2.courier = reader["COURIER_NO"].ToString();
+                                UCPage2.Trede = reader["TRADE_TERMS"].ToString();
+                                UCPage2.Description = reader["DESCRIPTION"].ToString();
 
 
 
@@ -1438,7 +1471,10 @@ namespace project_TelegraphicTransfer
                         }
 
                     }
-                    catch(Exception ex)
+
+
+
+                    catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message);
                     }
@@ -1447,35 +1483,115 @@ namespace project_TelegraphicTransfer
                         connsql.Close();
                     }
 
+                    try
+                    {
+                        MessageBox.Show(_formName + " " + _purpose + " " + _insertBy + " " + _date.ToString());
 
+                        connsql.Open();
+                        SqlCommand cmd = new SqlCommand("SELECT * FROM tbl_TRANSFER_ORDER_FORM where FILE_REFERENCE = @file and PURPOSE = @pur and ADD_EDITOR = @insert_by ", connsql);
+                        cmd.Parameters.AddWithValue("@file", _formName);
+                        cmd.Parameters.AddWithValue("@pur", _purpose);
+                        cmd.Parameters.AddWithValue("@insert_by", _insertBy);
+                        cmd.Parameters.AddWithValue("@date", _date);
 
-                   // UCPage2.Purpose = this.Purpose;
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                UCPage2 = new UCPage2();
+                                UCPage2.Name = reader["SENDER_NAME"].ToString();
+                                UCPage2.Address = reader["SENDER_ADDRESS"].ToString();
+                                UCPage2.Business = reader["SENDER_BUSINESS"].ToString();
+                                UCPage2.Phone = reader["SENDER_TPNO"].ToString();
+                                UCPage2.Purpose = reader["PURPOSE"].ToString();
+                                UCPage2.InNo = reader["INV"].ToString();
+                                UCPage2.vat = reader["SENDER_TAX"].ToString();
+                                UCPage2.Tin = reader["SENDER_TAX"].ToString();
+                                UCPage2.Bname = reader["BENEFICIARY_NAME"].ToString();
+                                UCPage2.Badress= reader["BENEFICIARY_ADDRESS"].ToString();
+                                UCPage2.Amount = reader["AMOUNT"].ToString();
+                                UCPage2.email1= reader["SENDER_EMAIL1"].ToString();
+                                UCPage2.email2 = reader["SENDER_EMAIL2"].ToString();
+                                UCPage2.BBCode = reader["BENEFICIARY_BRANCH_CODE"].ToString();
+                                UCPage2.BSCode= reader["BENEFICIARY_SWIFT_CODE"].ToString();
+                                UCPage2.BCountry= reader["BENEFICIARY_COUNTRY"].ToString();
+                                UCPage2.BANo= reader["BENEFICIARY_ACC_NO"].ToString();
+                                UCPage2.BIBank = reader["BENEFICIARY_INTERMEDIATE_BANK"].ToString();
+                                UCPage2.CType= reader["CURRENCY_TYPE"].ToString();
+                                UCPage2.AWords = reader["AMOUNT_WORDS"].ToString();
+                                UCPage2.Bank= reader["BENEFICIARY_BANK_NAME"].ToString();
+                                UCPage2.branch = reader["BENEFICIARY_BRANCH_NAME"].ToString();
+                                UCPage2.goods = reader["GOOD_STATE"].ToString();
+                                UCPage2.code= reader["HS_CODES"].ToString();
+                                UCPage2.courier = reader["COURIER_NO"].ToString();
+                                UCPage2.Trede = reader["TRADE_TERMS"].ToString();
+                                UCPage2.Description = reader["DESCRIPTION"].ToString();
+                                // Populate other properties of UCPage2
 
+                                UCPage3 = new UCPage3();
+                                UCPage3.name = reader["SENDER_NAME"].ToString();
+                                UCPage3.address = reader["SENDER_ADDRESS"].ToString();
+                                UCPage3.Bname = reader["BENEFICIARY_NAME"].ToString();
+                                UCPage3.baaddress= reader["BENEFICIARY_ADDRESS"].ToString();
+                                UCPage3.address= reader["BENEFICIARY_ADDRESS"].ToString();
+                                UCPage3.purposeb= reader["PURPOSE"].ToString();
+                                UCPage3.InNo = reader["INV"].ToString();
+                                // Populate other properties of UCPage3
+                                // Populate other properties of UCPage3
+
+                                // Populate other properties of UCPage3
+
+                                // ... (populate other properties of UCPage3)
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    finally
+                    {
+                        connsql.Close();
+                    }
+
+                    // Hide all other controls within panel1
+                    foreach (Control control in pnlt.Controls)
+                    {
+                        control.Visible = false;
+                    }
+
+                    //show this
+                    UCPage2.Show();
+
+                    //change the dock property
+                    UCPage2.Dock = DockStyle.Fill;
+
+                    //add to the panal
+                    pnlt.Controls.Add(UCPage2);
 
                 }
-
-                // Hide all other controls within panel1
-                foreach (Control control in pnlt.Controls)
-                {
-                    control.Visible = false;
-                }
-
-                //show this
-                UCPage2.Show();
-
-                //change the dock property
-                UCPage2.Dock = DockStyle.Fill;
-
-                //add to the panal
-                pnlt.Controls.Add(UCPage2);
-
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
 
 
+            // UCPage2.Purpose = this.Purpose;
+
+
         }
-    }
-}
+
+
+                //private void FormPrint_Load1(object sender, EventArgs e)
+
+                
+                           
+
+
+                }
+            }
+        
+    
+
